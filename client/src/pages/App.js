@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Query } from 'react-apollo'
 import { gql } from 'apollo-boost'
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -10,9 +10,10 @@ import Loading from '../components/Shared/Loading'
 import Error from '../components/Shared/Error'
 
 const App = ({ classes }) => {
+  const [searResults, setSearchResults] = useState([])
   return (
-    <div className={classes.root}>
-      <SearchTracks />
+    <div className={classes.container}>
+      <SearchTracks setSearchResults={setSearchResults} />
       <CreateTrack />
       <Query query={GET_TRACKS_QUERY}>
         {({ data: { tracks }, loading, error }) => {
@@ -20,7 +21,9 @@ const App = ({ classes }) => {
           if (error) return <Error error={error} />
           if (loading) return <Loading />
 
-          return <TrackList tracks={tracks} />
+          return (
+            <TrackList tracks={searResults.length > 0 ? searResults : tracks} />
+          )
         }}
       </Query>
     </div>

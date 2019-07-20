@@ -17,7 +17,7 @@ import LikeTrack from './LikeTrack'
 import UpdateTrack from './UpdateTrack'
 
 const TrackList = ({ classes, tracks }) => (
-  <List className={classes.root}>
+  <List>
     {tracks.map(track => (
       <ExpansionPanel key={track.id}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
