@@ -10,40 +10,40 @@ import Profile from './pages/Profile'
 import Loading from './components/Shared/Loading'
 import Error from './components/Shared/Error'
 
+export const UserContext = React.createContext()
+
 const Root = () => (
-  <Query query={ME_QUERY}>
+  <Query query={ME_QUERY} fetchPolicy='cache-and-network'>
     {({ data, loading, error }) => {
       if (loading) return <Loading />
       if (error) return <Error error={error} />
+      const currentUser = data.me
 
       return (
         <Router>
-          <>
-            <Header currentUser={data.me} />
+          <UserContext.Provider value={currentUser}>
+            <Header currentUser={currentUser} />
             <Switch>
               <Route exact path='/' component={App} />
               <Route path='/profile/:id' component={Profile} />
             </Switch>
-          </>
+          </UserContext.Provider>
         </Router>
       )
     }}
   </Query>
 )
-// const GET_TRACKS_QUERY = gql`
-//   {
-//     tracks {
-//       title
-//       createdAt
-//     }
-//   }
-// `
 
-const ME_QUERY = gql`
+export const ME_QUERY = gql`
   query {
     me {
       username
       id
+      likeSet {
+        track {
+          id
+        }
+      }
     }
   }
 `

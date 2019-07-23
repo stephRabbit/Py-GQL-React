@@ -95,6 +95,13 @@ const CreateTrack = ({ classes }) => {
     }
   }
 
+  const handleUpdateCache = (cache, { data: { createTrack } }) => {
+    const data = cache.readQuery({ query: GET_TRACKS_QUERY })
+    const tracks = [...data.tracks, createTrack.track]
+
+    cache.writeQuery({ query: GET_TRACKS_QUERY, data: { tracks } })
+  }
+
   return (
     <>
       <Button
@@ -105,14 +112,16 @@ const CreateTrack = ({ classes }) => {
         {open ? <ClearIcon /> : <AddIcon />}
       </Button>
       <Mutation
-        mutation={CREAT_TRACK_MUTATION}
+        mutation={CREATE_TRACK_MUTATION}
         onCompleted={data => {
           console.log(data)
           setOpen(false)
           setSubmitting(false)
           clearFormInputs()
         }}
-        refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}>
+        update={handleUpdateCache}
+        //refetchQueries={() => [{ query: GET_TRACKS_QUERY }]}
+      >
         {(createTrack, { error, loading }) => {
           if (error) {
             return <Error error={error} />
@@ -171,7 +180,7 @@ const CreateTrack = ({ classes }) => {
                     </label>
                   </FormControl>
                 </DialogContent>
-                <DialogContent>
+                <DialogActions>
                   <Button
                     disabled={submitting}
                     onClick={() => {
@@ -196,7 +205,7 @@ const CreateTrack = ({ classes }) => {
                       'Add Track'
                     )}
                   </Button>
-                </DialogContent>
+                </DialogActions>
               </form>
             </Dialog>
           )
@@ -206,7 +215,7 @@ const CreateTrack = ({ classes }) => {
   )
 }
 
-const CREAT_TRACK_MUTATION = gql`
+const CREATE_TRACK_MUTATION = gql`
   mutation($title: String!, $description: String!, $url: String!) {
     createTrack(title: $title, description: $description, url: $url) {
       track {
@@ -214,6 +223,13 @@ const CREAT_TRACK_MUTATION = gql`
         title
         description
         url
+        likes {
+          id
+        }
+        postedBy {
+          id
+          username
+        }
       }
     }
   }

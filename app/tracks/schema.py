@@ -109,15 +109,17 @@ class CreateLike(graphene.Mutation):
 
     def mutate(self, info, track_id):
         user = info.context.user
-
         if user.is_anonymous:
-            raise GraphQLError('Must be logged in to like tracks!')
+            raise GraphQLError('Login to like tracks.')
 
         track = Track.objects.get(id=track_id)
         if not track:
-            raise GraphQLError('Track does not exist, check the id!')
+            raise GraphQLError('Cannot find track with given track id')
 
-        Like.objects.create(user=user, track=track)
+        Like.objects.create(
+            user=user,
+            track=track
+        )
 
         return CreateLike(user=user, track=track)
 

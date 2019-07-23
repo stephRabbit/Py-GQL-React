@@ -17,7 +17,6 @@ const App = ({ classes }) => {
       <CreateTrack />
       <Query query={GET_TRACKS_QUERY}>
         {({ data: { tracks }, loading, error }) => {
-          console.log(tracks)
           if (error) return <Error error={error} />
           if (loading) return <Loading />
 
