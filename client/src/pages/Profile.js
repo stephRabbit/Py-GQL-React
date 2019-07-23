@@ -61,7 +61,7 @@ const Profile = ({ classes, match }) => {
                 <ThumbUpIcon className={classes.thumbIcon} />
                 Liked Tracks
               </Typography>
-              {data.user.likeSet.map(({ track }, index) => (
+              {data.user.likeSet.map(({ track }) => (
                 <div key={track.id}>
                   <Typography>
                     {track.title} · {track.likes.length} Likes ·{' '}
